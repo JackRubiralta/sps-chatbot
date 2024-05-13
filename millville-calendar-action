@@ -1,0 +1,87 @@
+openapi: 3.0.0
+info:
+  title: Google Calendar Events API
+  description: This API retrieves events from a specified Google Calendar within a given date range.
+  version: 1.0.0
+servers:
+  - url: https://www.googleapis.com/calendar/v3
+    description: Google Calendar API server
+paths:
+  /calendars/spsacademiccal@gmail.com/events:
+    get:
+      operationId: getCalendarEvents
+      summary: Retrieves events from a Google Calendar.
+      description: Fetches a list of calendar events based on time range and other filters.
+      parameters:
+ 
+        - name: key
+          in: query
+          required: true
+          description: API key to authorize requests (always use default).
+          schema:
+            type: string
+            default: 'AIzaSyBxoBIAkPxbC1hZNtFOmpHFv_z2ya9I838'
+        - name: timeMin
+          in: query
+          required: true
+          description: Start time for the event retrieval in RFC3339 timestamp format.
+          schema:
+            type: string
+            format: date-time
+            example: '2022-09-22T00:00:00-04:00'
+        - name: timeMax
+          in: query
+          required: true
+          description: End time for the event retrieval in RFC3339 timestamp format.
+          schema:
+            type: string
+            format: date-time
+            example: '2022-12-22T00:00:00-04:00'
+        - name: singleEvents
+          in: query
+          required: false
+          description: Whether to expand recurring events into instances.
+          schema:
+            type: boolean
+            default: true
+        - name: maxResults
+          in: query
+          required: false
+          description: Maximum number of events returned on one result page.
+          schema:
+            type: integer
+            default: 9999
+      responses:
+        '200':
+          description: Successfully retrieved event details.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      description: The date of the event.
+                      example: '2022-09-23'
+                    time:
+                      type: string
+                      description: The time of the event.
+                      example: '14:00:00'
+                    summary:
+                      type: string
+                      description: A brief summary of the event.
+                      example: 'Board Meeting'
+                    conferred:
+                      type: boolean
+                      description: Indicates whether the event is conferred.
+                      example: true
+        '400':
+          description: Bad request. Incorrect or insufficient input data.
+        '401':
+          description: Authorization error. Invalid API key.
+        '404':
+          description: Calendar not found.
+        '500':
+          description: Internal server error.
